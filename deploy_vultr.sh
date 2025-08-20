@@ -3,18 +3,23 @@
 # Simple Vultr Deployment Script
 echo "🚀 Simple Vultr Deployment Starting..."
 
-# Install Python and essential packages
-echo "📦 Installing Python and essential packages..."
+# Update system and install dependencies
+echo "📦 Updating system and installing dependencies..."
 apt update
-apt install -y python3 python3-pip python3-venv
+apt install -y software-properties-common wget curl build-essential
 
-# Check Python version
-echo "🐍 Python version:"
-python3 --version
+# Add deadsnakes PPA for latest Python
+echo "🐍 Adding Python PPA..."
+add-apt-repository ppa:deadsnakes/ppa -y
+apt update
 
-# Create virtual environment
-echo "🐍 Setting up Python environment..."
-python3 -m venv venv
+# Install Python 3.11 and essential packages
+echo "📦 Installing Python 3.11 and essential packages..."
+apt install -y python3.11 python3.11-venv python3.11-pip python3.11-dev
+
+# Create virtual environment with Python 3.11
+echo "🐍 Setting up Python 3.11 environment..."
+python3.11 -m venv venv
 source venv/bin/activate
 
 # Upgrade pip first
@@ -25,7 +30,7 @@ pip install --upgrade pip
 echo "📚 Installing Python packages..."
 pip install -r requirements.txt
 
-# Download spaCy model (for old version)
+# Download spaCy model
 echo "🤖 Downloading spaCy model..."
 python -m spacy download en_core_web_sm
 
