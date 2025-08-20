@@ -1,106 +1,102 @@
-Demo URL : https://sentimentbasedrecommendationsy.herokuapp.com/
+Demo URL: 
 
 # Problem Statement
-The e-commerce business is quite popular today. Here, you do not need to take orders by going to each customer. A company launches its website to sell the items to the end consumer, and customers can order the products that they require from the same website. Famous examples of such e-commerce companies are Amazon, Flipkart, Myntra, Paytm and Snapdeal.
+The e-commerce industry has become one of the most dominant sectors today. Unlike traditional businesses, customers can conveniently place orders online without the need for in-person interaction. Companies launch their own websites to sell products directly to end consumers, who can then browse and purchase items easily. Popular examples of such platforms include Amazon, Flipkart, Myntra, Paytm, and Snapdeal.
 
- 
+Imagine you are working as a Machine Learning Engineer at an e-commerce company named **Ebuss**. Ebuss has established a strong presence across multiple product categories, including household essentials, books, personal care, medicines, cosmetics, beauty products, electronic appliances, kitchenware, dining essentials, and healthcare items.
 
-Suppose you are working as a Machine Learning Engineer in an e-commerce company named 'Ebuss'. Ebuss has captured a huge market share in many fields, and it sells the products in various categories such as household essentials, books, personal care products, medicines, cosmetic items, beauty products, electrical appliances, kitchen and dining products and health care products.
+With rapid technological advancements and tough competition from industry leaders like Amazon and Flipkart, Ebuss needs to scale quickly and differentiate itself in order to capture more market share.
 
- 
+As a senior ML Engineer, your responsibility is to design a model that enhances product recommendations by leveraging customer reviews and ratings.
 
-With the advancement in technology, it is imperative for Ebuss to grow quickly in the e-commerce market to become a major leader in the market because it has to compete with the likes of Amazon, Flipkart, etc., which are already market leaders.
+To achieve this, you will build a **sentiment-based product recommendation system**, which involves the following steps:
 
+- Collecting and analyzing data using sentiment analysis  
+- Designing and implementing a recommendation engine  
+- Refining recommendations with the help of sentiment analysis  
+- Deploying the complete end-to-end system with a user interface  
 
-As a senior ML Engineer, you are asked to build a model that will improve the recommendations given to the users given their past reviews and ratings. 
+The dataset used for this project is a curated subset of a Kaggle competition dataset, provided below.
 
- 
+---
 
-In order to do this, you planned to build a sentiment-based product recommendation system, which includes the following tasks.
+## Steps for Task Execution
 
-- Data sourcing and sentiment analysis
-- Building a recommendation system
-- Improving the recommendations using the sentiment analysis model
-- Deploying the end-to-end project with a user interface
+### Exploratory Data Analysis
+Understand the dataset, distributions, and patterns.
 
+### Data Cleaning
+Handle missing values, duplicates, and inconsistencies.
 
-The dataset that you are going to use is inspired by this Kaggle competition. We have made a subset of the original dataset, which has been provided below.
+### Text Preprocessing
+Apply NLP techniques such as tokenization, stop-word removal, lemmatization, etc.
 
+### Feature Extraction
+Convert textual reviews into numerical representations using methods such as:
+- Bag of Words (BoW)
+- TF-IDF Vectorization
+- Word Embeddings
 
-The steps to be performed for the first task are given below.
+### Training a Text Classification Model
+Build at least three machine learning models to perform sentiment analysis. Out of the following four, you must implement at least three and then compare their performance:
 
-### Exploratory data analysis
+1. Logistic Regression  
+2. Random Forest  
+3. XGBoost  
+4. Naive Bayes  
 
-### Data cleaning
+Use appropriate techniques for class imbalance handling and hyperparameter tuning. Select the **best-performing model** as your final sentiment classifier.
 
-### Text preprocessing
+---
 
-### Feature extraction: 
-In order to extract features from the text data, you may choose from any of the methods, including bag-of-words, TF-IDF vectorization or word embedding.
+## Building a Recommendation System
+Recommendation engines can be developed using two major approaches:
 
-### Training a text classification model: 
-You need to build at least three ML models. You then need to analyse the performance of each of these models and choose the best model. At least three out of the following four models need to be built (Do not forget, if required, handle the class imbalance and perform hyperparameter tuning.). 
-1. Logistic regression
-2. Random forest
-3. XGBoost
-4. Naive Bayes
+1. **User-based recommendation system**  
+2. **Item-based recommendation system**
 
-Out of these four models, you need to select one classification model based on its performance.
+Analyze both methods and choose the one that best fits this use case. Once the system is finalized, generate the **top 20 product recommendations** for each user based on their ratings. User identity can be determined through the `reviews_username` column in the dataset.
 
-### Building a recommendation system
-As you learnt earlier, you can use the following types of recommendation systems.
+---
 
- 
+## Enhancing Recommendations with Sentiment Analysis
+After generating 20 recommendations for a user, filter them further using the trained sentiment model. Select the **top 5 products** with the most positive sentiments from their reviews.  
 
-1. User-based recommendation system
-2. Item-based recommendation system
+This way, your final system combines both **collaborative filtering** and **sentiment analysis**, improving personalization and accuracy.
 
- 
+---
 
-Your task is to analyse the recommendation systems and select the one that is best suited in this case. 
+## Deployment of the End-to-End System
+The finalized sentiment model and recommendation system will be deployed as a web application. The deployment process will use:
 
- 
+- **Flask**: For building the backend application and serving the ML model.  
+- **Heroku**: A cloud-based platform (PaaS) for deploying and hosting the application publicly.
 
-Once you get the best-suited recommendation system, the next task is to recommend 20 products that a user is most likely to purchase based on the ratings. You can use the 'reviews_username' (one of the columns in the dataset) to identify your user. 
+### User Interface Requirements:
+- Accept an existing username as input.  
+- Provide a **submit button** for user queries.  
+- On submission, display the **top 5 recommended products** for the selected username.  
 
- 
+**Note**: The system is designed only for existing users and products in the dataset. No new users or products will be introduced.
 
-### Improving the recommendations using the sentiment analysis model
-Now, the next task is to link this recommendation system with the sentiment analysis model that was built earlier (recall that we asked you to select one ML model out of the four options). Once you recommend 20 products to a particular user using the recommendation engine, you need to filter out the 5 best products based on the sentiments of the 20 recommended product reviews. 
+---
 
- 
+## Assumptions
+- The dataset contains a fixed number of users and products.  
+- Recommendations and sentiment analysis are only applicable to users who have already provided reviews/ratings.  
 
-In this way, you will get an ML model (for sentiments) and the best-suited recommendation system. Next, you need to deploy the entire project publically.
+---
 
- 
+## Project Submission Requirements
+1. **Jupyter Notebook** containing:  
+   - Data cleaning steps  
+   - Text preprocessing pipeline  
+   - Feature extraction methods  
+   - Sentiment analysis model building (with at least 3 ML models)  
+   - Recommendation system implementations and evaluation  
 
-### Deployment of this end to end project with a user interface
-Once you get the ML model and the best-suited recommendation system, you will deploy the end-to-end project. You need to use the Flask framework, which is majorly used to create web applications to deploy machine learning models.
-
- 
-
-To make the web application public, you need to use Heroku, which works as the platform as a service (PaaS) that helps developers build, run and operate applications entirely on the cloud.
-
- 
-
-Include the following features in the user interface.
-
-- Take any of the existing usernames as input.
-- Create a submit button to submit the username.
-- Once you press the submit button, it should recommend 5 products based on the entered username.
-
-Note: An important point that you need to consider here is that the number of users and the number of products are fixed in this case study, and you are doing the sentiment analysis and building the recommendation system only for those users who have already submitted the reviews or ratings corresponding to some of the products in the dataset. 
-
-
-### Assumption: No new users or products will be introduced or considered when building or predicting from the models built.
-
- 
-
-What needs to be submitted for the evaluation of the project?
-
-- An end-to-end Jupyter Notebook, which consists of the entire code (data cleaning steps, text preprocessing, feature extraction, ML models used to build sentiment analysis models, two recommendation systems and their evaluations, etc.) of the problem statement defined
-# The following deployment files
-- One 'model.py' file, which should contain only one ML model and only one recommendation system that you have obtained from the previous steps along with the entire code to deploy the end-to-end project using Flask and Heroku
-- 'index.html' file, which includes the HTML code of the user interface
-- 'app.py' file, which is the Flask file to connect the backend ML model with the frontend HTML code
-- Supported pickle files, which have been generated while pickling the models
+2. **Deployment Files**:  
+   - `model.py`: Contains the chosen sentiment analysis model, the final recommendation system, and the complete deployment logic using Flask and Heroku.  
+   - `index.html`: HTML code for the frontend UI.  
+   - `app.py`: Flask backend file that connects the ML model with the frontend.  
+   - Serialized model files (`.pkl`) generated during model training.  
