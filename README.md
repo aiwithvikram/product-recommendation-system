@@ -1,4 +1,4 @@
-Demo URL: https://product-recommendation-system-pthq.onrender.com
+Demo URL: http://144.202.30.217:5000/
 
 # Problem Statement
 The e-commerce industry has become one of the most dominant sectors today. Unlike traditional businesses, customers can conveniently place orders online without the need for in-person interaction. Companies launch their own websites to sell products directly to end consumers, who can then browse and purchase items easily. Popular examples of such platforms include Amazon, Flipkart, Myntra, Paytm, and Snapdeal.
