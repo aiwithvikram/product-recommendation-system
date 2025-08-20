@@ -7,7 +7,7 @@ Type=simple
 User=root
 WorkingDirectory=/root/product-recommendation-system
 Environment=PATH=/root/product-recommendation-system/venv/bin
-ExecStart=/root/product-recommendation-system/venv/bin/gunicorn --workers 2 --bind 0.0.0.0:5000 app:app
+ExecStart=/root/product-recommendation-system/venv/bin/python -m gunicorn --workers 2 --bind 0.0.0.0:5000 app:app
 Restart=always
 RestartSec=10
 
