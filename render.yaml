@@ -3,7 +3,10 @@ services:
     name: product-recommendation-system
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    buildCommand: |
+      pip install --upgrade pip &&
+      pip install -r requirements.txt &&
+      python -m spacy download en_core_web_sm --direct
     startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
