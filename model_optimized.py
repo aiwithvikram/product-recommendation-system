@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import gc
 
 # Download required NLTK data
 import os
@@ -19,62 +20,91 @@ nltk.download('wordnet', download_dir=nltk_data_dir, quiet=True)
 nltk.download('omw-1.4', download_dir=nltk_data_dir, quiet=True)
 
 # Load the data
+print("Loading data...")
 product_df = pd.read_csv('sample30.csv', sep=",")
 
 # Clean the data
 product_df = product_df.dropna(subset=['reviews_text', 'reviews_username'])
 product_df = product_df[product_df['reviews_text'].str.len() > 10]  # Remove very short reviews
 
-# Create a simple sentiment analysis model
-def create_simple_sentiment_model():
-    """Create a simple sentiment analysis model using the existing data"""
-    # Create features from text
-    tfidf = TfidfVectorizer(max_features=1000, stop_words='english')
-    X = tfidf.fit_transform(product_df['reviews_text'])
-    
-    # Use existing sentiment labels if available, otherwise create simple ones
-    if 'user_sentiment' in product_df.columns:
-        y = (product_df['user_sentiment'] == 'Positive').astype(int)
-    else:
-        # Create simple sentiment based on rating
-        y = (product_df['reviews_rating'] >= 4).astype(int)
-    
-    # Train a simple logistic regression model
-    model = LogisticRegression(random_state=42, max_iter=1000)
-    model.fit(X, y)
-    
-    return tfidf, model
-
-# Create recommendation matrix
-def create_recommendation_matrix():
-    """Create a simple user-item recommendation matrix"""
-    # Create user-item matrix
-    user_item_matrix = product_df.pivot_table(
-        index='reviews_username', 
-        columns='name', 
-        values='reviews_rating', 
-        fill_value=0
-    )
-    
-    # Calculate user similarity
-    user_similarity = cosine_similarity(user_item_matrix)
-    user_similarity_df = pd.DataFrame(
-        user_similarity, 
-        index=user_item_matrix.index, 
-        columns=user_item_matrix.index
-    )
-    
-    return user_item_matrix, user_similarity_df
-
-# Initialize models
-print("Initializing models...")
-tfidf_vectorizer, sentiment_model = create_simple_sentiment_model()
-user_item_matrix, user_similarity = create_recommendation_matrix()
-print("Models initialized successfully!")
-
-# Memory optimization: Clear large variables after initialization
-import gc
+# Memory optimization: Keep only essential columns
+product_df = product_df[['name', 'reviews_text', 'reviews_username', 'reviews_rating']].copy()
 gc.collect()
+
+print("Data loaded successfully!")
+
+# Lazy loading of models
+_tfidf_vectorizer = None
+_sentiment_model = None
+_user_item_matrix = None
+_user_similarity = None
+
+def get_sentiment_model():
+    """Get or create sentiment analysis model (lazy loading)"""
+    global _tfidf_vectorizer, _sentiment_model
+    
+    if _tfidf_vectorizer is None or _sentiment_model is None:
+        print("Training sentiment model...")
+        
+        # Create features from text
+        tfidf = TfidfVectorizer(max_features=500, stop_words='english')  # Reduced features
+        X = tfidf.fit_transform(product_df['reviews_text'])
+        
+        # Use existing sentiment labels if available, otherwise create simple ones
+        if 'user_sentiment' in product_df.columns:
+            y = (product_df['user_sentiment'] == 'Positive').astype(int)
+        else:
+            # Create simple sentiment based on rating
+            y = (product_df['reviews_rating'] >= 4).astype(int)
+        
+        # Train a simple logistic regression model
+        model = LogisticRegression(random_state=42, max_iter=500)  # Reduced iterations
+        model.fit(X, y)
+        
+        _tfidf_vectorizer = tfidf
+        _sentiment_model = model
+        
+        # Clear memory
+        del X, y
+        gc.collect()
+        
+        print("Sentiment model ready!")
+    
+    return _tfidf_vectorizer, _sentiment_model
+
+def get_recommendation_matrix():
+    """Get or create recommendation matrix (lazy loading)"""
+    global _user_item_matrix, _user_similarity
+    
+    if _user_item_matrix is None or _user_similarity is None:
+        print("Creating recommendation matrix...")
+        
+        # Create user-item matrix
+        user_item_matrix = product_df.pivot_table(
+            index='reviews_username', 
+            columns='name', 
+            values='reviews_rating', 
+            fill_value=0
+        )
+        
+        # Calculate user similarity (simplified)
+        user_similarity = cosine_similarity(user_item_matrix)
+        user_similarity_df = pd.DataFrame(
+            user_similarity, 
+            index=user_item_matrix.index, 
+            columns=user_item_matrix.index
+        )
+        
+        _user_item_matrix = user_item_matrix
+        _user_similarity = user_similarity_df
+        
+        # Clear memory
+        del user_similarity
+        gc.collect()
+        
+        print("Recommendation matrix ready!")
+    
+    return _user_item_matrix, _user_similarity
 
 # Text preprocessing functions
 def remove_special_characters(text, remove_digits=True):
@@ -91,6 +121,8 @@ def normalize_text(input_text):
 # Predicting the sentiment of the product review comments
 def model_predict(text):
     """Predict sentiment for given text"""
+    tfidf_vectorizer, sentiment_model = get_sentiment_model()
+    
     if isinstance(text, str):
         text = [text]
     normalized_text = [normalize_text(t) for t in text]
@@ -101,11 +133,13 @@ def model_predict(text):
 # Recommend products based on user similarity
 def recommend_products(user_name):
     """Recommend products for a given user"""
+    user_item_matrix, user_similarity = get_recommendation_matrix()
+    
     if user_name not in user_similarity.index:
         return pd.DataFrame()
     
-    # Get similar users
-    similar_users = user_similarity[user_name].sort_values(ascending=False)[1:6]
+    # Get similar users (limited to top 3 for memory efficiency)
+    similar_users = user_similarity[user_name].sort_values(ascending=False)[1:4]
     
     # Get products rated by similar users
     recommended_products = []
@@ -151,3 +185,5 @@ def top5_products(df):
     output_products = merge_df[merge_df['predicted_sentiment'] == 1]['name'].head(5)
     
     return pd.DataFrame({'name': output_products})
+
+print("Model module loaded successfully!")
