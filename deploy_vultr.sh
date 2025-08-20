@@ -28,5 +28,5 @@ systemctl enable product-recommendation.service
 systemctl start product-recommendation.service
 
 echo "✅ Simple deployment completed!"
-echo "🌐 Your app is running at: http://155.138.203.223:5000"
+echo "🌐 Your app is running at: http://144.202.30.217:5000"
 echo "📊 Check status: systemctl status product-recommendation"
