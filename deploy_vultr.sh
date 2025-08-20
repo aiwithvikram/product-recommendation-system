@@ -1,26 +1,44 @@
 #!/bin/bash
 
-# Simple Vultr Deployment Script
-echo "🚀 Simple Vultr Deployment Starting..."
+# AlmaLinux/RHEL Deployment Script
+echo "🚀 AlmaLinux/RHEL Deployment Starting..."
 
 # Update system and install dependencies
 echo "📦 Updating system and installing dependencies..."
-apt update
-apt install -y software-properties-common wget curl build-essential
+yum update -y
+yum install -y wget curl gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel
 
-# Add deadsnakes PPA for latest Python
-echo "🐍 Adding Python PPA..."
-add-apt-repository ppa:deadsnakes/ppa -y
-apt update
+# Install Python 3.11 from source (AlmaLinux 8 doesn't have Python 3.11 in repos)
+echo "🐍 Installing Python 3.11 from source..."
+cd /tmp
+wget https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz
+tar -xzf Python-3.11.13.tgz
+cd Python-3.11.13
 
-# Install Python 3.11 and essential packages
-echo "📦 Installing Python 3.11 and essential packages..."
-apt install -y python3.11 python3.11-venv python3.11-pip python3.11-dev
+# Configure and compile Python
+./configure --enable-optimizations --prefix=/usr/local
+make -j $(nproc)
+make altinstall
+
+# Create symlink
+ln -sf /usr/local/bin/python3.11 /usr/local/bin/python3.11
+ln -sf /usr/local/bin/pip3.11 /usr/local/bin/pip3.11
+
+# Go back to app directory
+cd /root/product-recommendation-system
+
+# Remove old virtual environment if it exists
+echo "🧹 Cleaning up old environment..."
+rm -rf venv
 
 # Create virtual environment with Python 3.11
 echo "🐍 Setting up Python 3.11 environment..."
-python3.11 -m venv venv
+/usr/local/bin/python3.11 -m venv venv
 source venv/bin/activate
+
+# Verify we're using Python 3.11
+echo "🐍 Python version in venv:"
+python --version
 
 # Upgrade pip first
 echo "📚 Upgrading pip..."
@@ -41,6 +59,6 @@ systemctl daemon-reload
 systemctl enable product-recommendation.service
 systemctl start product-recommendation.service
 
-echo "✅ Simple deployment completed!"
+echo "✅ AlmaLinux deployment completed!"
 echo "🌐 Your app is running at: http://144.202.30.217:5000"
 echo "📊 Check status: systemctl status product-recommendation"
