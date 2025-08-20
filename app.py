@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import model_optimized as model
+import model
 
 app = Flask(__name__)
 
