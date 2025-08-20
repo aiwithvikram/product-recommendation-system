@@ -1,0 +1,2 @@
+Used render to deploy the app
+https://product-recommendation-system-pthq.onrender.com
