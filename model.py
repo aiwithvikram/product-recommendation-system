@@ -158,7 +158,7 @@ def recommend_products(username, num_recommendations=5):
         # If we don't have enough, add top rated products
         if len(recommended_list) < num_recommendations:
             top_products = product_df.sort_values('reviews_rating', ascending=False).head(num_recommendations)
-            for product in top_products['name']:
+            for product in top_products['name'].tolist():
                 if product not in recommended_list and len(recommended_list) < num_recommendations:
                     recommended_list.append(product)
         

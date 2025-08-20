@@ -23,19 +23,19 @@ def recommend_top5():
     
     if user_name in valid_userid and request.method == 'POST':
         try:
-            top20_products = model.recommend_products(user_name)
-            print(top20_products.head())
+            recommended_products = model.recommend_products(user_name)
+            print('Recommended products:', recommended_products)
             
-            if not top20_products.empty:
-                get_top5 = model.top5_products(top20_products)
-                if not get_top5.empty:
-                    return render_template('index.html', 
-                                        column_names=get_top5.columns.values, 
-                                        row_data=list(get_top5.values.tolist()), 
-                                        zip=zip, 
-                                        text='Recommended products')
-                else:
-                    return render_template('index.html', text='No positive sentiment products found for recommendations')
+            if recommended_products and len(recommended_products) > 0:
+                # Convert list to DataFrame for display
+                import pandas as pd
+                products_df = pd.DataFrame({'Product Name': recommended_products})
+                
+                return render_template('index.html', 
+                                    column_names=products_df.columns.values, 
+                                    row_data=list(products_df.values.tolist()), 
+                                    zip=zip, 
+                                    text='Recommended products')
             else:
                 return render_template('index.html', text='No products found for this user')
                 
