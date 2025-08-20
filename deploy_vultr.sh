@@ -6,17 +6,17 @@ echo "🚀 AlmaLinux/RHEL Deployment Starting..."
 # Update system and install dependencies
 echo "📦 Updating system and installing dependencies..."
 yum update -y
-yum install -y wget curl gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel
+yum install -y wget curl gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel sqlite-devel readline-devel
 
-# Install Python 3.11 from source (AlmaLinux 8 doesn't have Python 3.11 in repos)
-echo "🐍 Installing Python 3.11 from source..."
+# Install Python 3.11 from source with SQLite support
+echo "🐍 Installing Python 3.11 from source with SQLite support..."
 cd /tmp
 wget https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz
 tar -xzf Python-3.11.13.tgz
 cd Python-3.11.13
 
-# Configure and compile Python
-./configure --enable-optimizations --prefix=/usr/local
+# Configure and compile Python with SQLite support
+./configure --enable-optimizations --prefix=/usr/local --enable-loadable-sqlite-extensions
 make -j $(nproc)
 make altinstall
 
@@ -39,6 +39,10 @@ source venv/bin/activate
 # Verify we're using Python 3.11
 echo "🐍 Python version in venv:"
 python --version
+
+# Test SQLite support
+echo "🔍 Testing SQLite support..."
+python -c "import sqlite3; print('SQLite version:', sqlite3.sqlite_version)"
 
 # Upgrade pip first
 echo "📚 Upgrading pip..."
