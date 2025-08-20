@@ -12,6 +12,10 @@ echo "🐍 Setting up Python environment..."
 python3 -m venv venv
 source venv/bin/activate
 
+# Upgrade pip first
+echo "📚 Upgrading pip..."
+pip install --upgrade pip
+
 # Install requirements
 echo "📚 Installing Python packages..."
 pip install -r requirements.txt
