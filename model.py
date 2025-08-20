@@ -8,10 +8,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 # Download required NLTK data
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
-nltk.download('omw-1.4', quiet=True)
+import os
+nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
+if not os.path.exists(nltk_data_dir):
+    os.makedirs(nltk_data_dir)
+
+nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
+nltk.download('stopwords', download_dir=nltk_data_dir, quiet=True)
+nltk.download('wordnet', download_dir=nltk_data_dir, quiet=True)
+nltk.download('omw-1.4', download_dir=nltk_data_dir, quiet=True)
 
 # Load the data
 product_df = pd.read_csv('sample30.csv', sep=",")

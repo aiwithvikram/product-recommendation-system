@@ -45,4 +45,5 @@ def recommend_top5():
 
 if __name__ == '__main__':
     app.debug = False
+    # For local development
     app.run(host='0.0.0.0', port=5000)
