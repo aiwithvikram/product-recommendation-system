@@ -1,4 +1,0 @@
-Used render to deploy the app
-https://product-recommendation-system-pthq.onrender.com
-
-Note: App will take time to load as using free server, it goes down if not used for long time.

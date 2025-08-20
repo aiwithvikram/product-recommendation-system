@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request
 import model
+import os
 
 app = Flask(__name__)
+
+# Production configuration
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+app.config['DEBUG'] = False
 
 # Valid user IDs from the dataset
 valid_userid = ['00sab00', '1234', 'zippy', 'zburt5', 'joshua', 'dorothy w', 'rebecca', 'walker557', 'samantha', 'raeanne', 'cimmie', 'cassie', 'moore222']
@@ -43,7 +48,14 @@ def recommend_top5():
     else:
         return render_template('index.html')
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for load balancers"""
+    return {'status': 'healthy', 'service': 'product-recommendation-system'}
+
 if __name__ == '__main__':
-    app.debug = False
-    # For local development
-    app.run(host='0.0.0.0', port=5000)
+    # For production, use environment variables
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '0.0.0.0')
+    
+    app.run(host=host, port=port)

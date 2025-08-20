@@ -1,0 +1,15 @@
+[Unit]
+Description=Product Recommendation System
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/product-recommendation-system
+Environment=PATH=/root/product-recommendation-system/venv/bin
+ExecStart=/root/product-recommendation-system/venv/bin/gunicorn --workers 4 --bind 0.0.0.0:5000 app_production:app
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
